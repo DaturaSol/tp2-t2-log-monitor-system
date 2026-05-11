@@ -1,0 +1,17 @@
+# .devcontainer/docker-compose.yml
+# -----------------------------------------
+# Docker Compose; not necessary, but a nice
+# pratice for myself.
+# -----------------------------------------
+name: "tp2-t2-190042656-container"
+
+services:
+  dev:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    container_name: dev_station
+    tty: true
+    command: sleep infinity
+    volumes:
+      - ..:/workspace:cached

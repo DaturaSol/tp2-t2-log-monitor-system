@@ -1,0 +1,15 @@
+# .clang-format
+BasedOnStyle: Google
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never
+
+# Aligns with cpplint's Google style expectations
+ColumnLimit: 80
+AccessModifierOffset: -1
+
+# Comment spacing (fixes the cpplint whitespace/comments rule)
+SpacesBeforeTrailingComments: 2
+
+# Brace style (fixes the else on same line rule)
+BreakBeforeBraces: Attach

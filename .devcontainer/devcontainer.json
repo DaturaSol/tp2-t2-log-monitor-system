@@ -1,0 +1,31 @@
+// .devcontainer/devcontainer.json
+{
+    "name": "TP2 Trabalho 2 190042656",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "dev",
+    "workspaceFolder": "/workspace",
+    "shutdownAction": "stopCompose",
+    "remoteUser": "root",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "llvm-vs-code-extensions.vscode-clangd", // I enjoy proper documentation while coding.
+                "ms-vscode.cpptools",
+                "twxs.cmake",
+                "yzhang.markdown-all-in-one", // Great to read my markdown
+                "eamodio.gitlens"
+            ],
+            "settings": {
+                // This disables the MS IntelliSense so it doesn't conflict with clangd
+                "C_Cpp.intelliSenseEngine": "disabled",
+                "clangd.path": "/usr/bin/clangd",
+                "clangd.fallbackFlags": [
+                    "-std=c++20"
+                ],
+                "editor.tabSize": 2,
+                "editor.insertSpaces": true,
+                "editor.formatOnSave": true
+            }
+        }
+    }
+}
