@@ -2,9 +2,9 @@
 
 #include <gtest/gtest.h>
 
-#include <monitor/LogListParser.hpp>
-#include <monitor/LogParser.hpp>
-#include <monitor/LogTypes.hpp>
+#include <monitor/core/LogListParser.hpp>
+#include <monitor/core/LogParser.hpp>
+#include <monitor/utils/LogTypes.hpp>
 #include <sstream>
 
 /*

@@ -1,7 +1,7 @@
 // src/core/LogParser.cpp
 
-#include <monitor/LogParser.hpp>
-#include <monitor/LogTypes.hpp>
+#include <monitor/core/LogParser.hpp>
+#include <monitor/utils/LogTypes.hpp>
 #include <regex>
 
 namespace monitor {

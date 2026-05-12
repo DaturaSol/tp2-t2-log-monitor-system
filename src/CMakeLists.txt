@@ -1,9 +1,9 @@
 # src/CmakeLists.txt
 add_library(monitor_core
-  core/LogListParser.cpp 
-  core/LogManager.cpp
+  core/LogListParser.cpp
   core/LogParser.cpp
   utils/StringUtils.cpp
+  utils/DateUtils.cpp
 )
 
 target_include_directories(monitor_core PUBLIC

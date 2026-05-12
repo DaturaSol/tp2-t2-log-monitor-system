@@ -1,4 +1,4 @@
-// include/monitor/LogTypes.hpp
+// include/monitor/utils/LogTypes.hpp
 
 #pragma once
 

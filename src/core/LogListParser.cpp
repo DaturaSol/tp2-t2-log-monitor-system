@@ -2,7 +2,7 @@
 
 #include <fstream>
 #include <istream>
-#include <monitor/LogListParser.hpp>
+#include <monitor/core/LogListParser.hpp>
 #include <string>
 
 namespace monitor {

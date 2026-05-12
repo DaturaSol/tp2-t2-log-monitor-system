@@ -1,8 +1,8 @@
-// include/monitor/LogParser.hpp
+// include/monitor/core/LogParser.hpp
 
 #pragma once
 
-#include <monitor/LogTypes.hpp>
+#include <monitor/utils/LogTypes.hpp>
 #include <string>
 
 namespace monitor {
