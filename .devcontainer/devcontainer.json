@@ -11,9 +11,10 @@
             "extensions": [
                 "llvm-vs-code-extensions.vscode-clangd", // I enjoy proper documentation while coding.
                 "ms-vscode.cpptools",
-                "twxs.cmake",
+                // "twxs.cmake",  // cmake-tools instead
                 "yzhang.markdown-all-in-one", // Great to read my markdown
-                "eamodio.gitlens"
+                "eamodio.gitlens",
+                "ms-vscode.cmake-tools"
             ],
             "settings": {
                 // This disables the MS IntelliSense so it doesn't conflict with clangd

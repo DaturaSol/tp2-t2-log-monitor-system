@@ -16,6 +16,9 @@ RUN apt-get update && apt-get install -y \
     git \
     libgtest-dev \
     clang-format \
+    valgrind \
+    python3-pip \
+    cppcheck \
     && rm -rf /var/lib/apt/lists/*
 
 RUN cd /usr/src/googletest && \
