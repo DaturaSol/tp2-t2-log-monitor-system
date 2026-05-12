@@ -2,11 +2,13 @@
 
 #include <fstream>
 #include <istream>
-#include <monitor/core/LogListParser.hpp>
 #include <string>
+#include <vector>
+
+#include "monitor/core/LogListParser.hpp"
 
 namespace monitor {
-std::vector<std::string> LogListParser::getLogPaths(std::istream& inStream) {
+std::vector<std::string> LogListParser::getLogPaths(std::istream &inStream) {
   std::vector<std::string> paths;
   std::string line;
 
@@ -22,8 +24,8 @@ std::vector<std::string> LogListParser::getLogPaths(std::istream& inStream) {
   return paths;
 }
 
-std::vector<std::string> LogListParser::getLogPaths(
-    const std::string& masterFilePath) {
+std::vector<std::string>
+LogListParser::getLogPaths(const std::string &masterFilePath) {
   std::ifstream file(masterFilePath);
 
   // empty vector if no file
@@ -34,4 +36,4 @@ std::vector<std::string> LogListParser::getLogPaths(
   return getLogPaths(file);
 }
 
-}  // namespace monitor
+} // namespace monitor

@@ -4,12 +4,15 @@
 
 #include <filesystem>
 #include <fstream>
-#include <monitor/core/LogListParser.hpp>
-#include <monitor/core/LogManager.hpp>
-#include <monitor/core/LogParser.hpp>
-#include <monitor/utils/DateUtils.hpp>
-#include <monitor/utils/LogTypes.hpp>
 #include <sstream>
+#include <string>
+#include <vector>
+
+#include "monitor/core/LogListParser.hpp"
+#include "monitor/core/LogManager.hpp"
+#include "monitor/core/LogParser.hpp"
+#include "monitor/utils/DateUtils.hpp"
+#include "monitor/utils/LogTypes.hpp"
 
 /*
  * Test 1:
@@ -47,9 +50,8 @@ TEST(LogParserTest, RejectsInvalidLogFormat) {
  */
 TEST(LogListParserTest, ReadsPathsFromStream) {
   // in memory simulated file
-  std::stringstream mockMemoryFile(
-      "c:\\logs\\log1.txt\n"
-      "f:\\logs\\log2.txt\n");
+  std::stringstream mockMemoryFile("c:\\logs\\log1.txt\n"
+                                   "f:\\logs\\log2.txt\n");
 
   std::vector<std::string> paths =
       monitor::LogListParser::getLogPaths(mockMemoryFile);
@@ -115,8 +117,8 @@ TEST(DateUtilsTest, ConvertsStringsToSortableTimestamps) {
   std::string date2 = "17/1/2026";
   std::string time2 = "14:17:46";
 
-  long timestamp1 = monitor::DateUtils::convertToTimestamp(date1, time1);
-  long timestamp2 = monitor::DateUtils::convertToTimestamp(date2, time2);
+  int64_t timestamp1 = monitor::DateUtils::convertToTimestamp(date1, time1);
+  int64_t timestamp2 = monitor::DateUtils::convertToTimestamp(date2, time2);
 
   EXPECT_GT(timestamp2, timestamp1);
 

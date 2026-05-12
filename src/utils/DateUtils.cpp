@@ -3,8 +3,10 @@
 #include <cstdint>
 #include <ctime>
 #include <iomanip>
-#include <monitor/utils/DateUtils.hpp>
 #include <sstream>
+#include <string>
+
+#include "monitor/utils/DateUtils.hpp"
 
 namespace monitor {
 int64_t DateUtils::convertToTimestamp(const std::string &date,
@@ -23,4 +25,4 @@ int64_t DateUtils::convertToTimestamp(const std::string &date,
 
   return static_cast<int64_t>(timestamp);
 }
-}  // namespace monitor
+} // namespace monitor

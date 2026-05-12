@@ -2,11 +2,13 @@
 
 #include <filesystem>
 #include <iostream>
-#include <monitor/core/LogManager.hpp>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
-void printUsage(const char* programName) {
+#include "monitor/core/LogManager.hpp"
+
+void printUsage(const char *programName) {
   std::cout << "Usage: " << programName << " [options]\n\n"
             << "Options:\n"
             << "  --masterFile <path>   Path to the master log file (default: "
@@ -24,7 +26,7 @@ std::unordered_map<std::string, CommandOption> optionMap = {
     {"--masterFile", CommandOption::MasterFile},
     {"--outdir", CommandOption::OutDir}};
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   std::cout << "Log Monitor starting...\n"
             << "For help pass the flag --help or --h. \n";
 
@@ -41,34 +43,34 @@ int main(int argc, char* argv[]) {
         optionMap.count(args[i]) ? optionMap[args[i]] : CommandOption::Unknown;
 
     switch (opt) {
-      case CommandOption::Help:
-        printUsage(argv[0]);
-        return 0;
+    case CommandOption::Help:
+      printUsage(argv[0]);
+      return 0;
 
-      case CommandOption::MasterFile:
-        if (i + 1 < args.size()) {
-          masterFilePath = args[++i];
-          masterFileProvided = true;
-        } else {
-          std::cerr << "ERROR: --masterFile requires a file path argument.\n";
-          return 1;
-        }
-        break;
+    case CommandOption::MasterFile:
+      if (i + 1 < args.size()) {
+        masterFilePath = args[++i];
+        masterFileProvided = true;
+      } else {
+        std::cerr << "ERROR: --masterFile requires a file path argument.\n";
+        return 1;
+      }
+      break;
 
-      case CommandOption::OutDir:
-        if (i + 1 < args.size()) {
-          outputDir = args[++i];
-          outputDirProvided = true;
-        } else {
-          std::cerr << "ERROR: --outdir requires a directory path argument.\n";
-          return 1;
-        }
-        break;
+    case CommandOption::OutDir:
+      if (i + 1 < args.size()) {
+        outputDir = args[++i];
+        outputDirProvided = true;
+      } else {
+        std::cerr << "ERROR: --outdir requires a directory path argument.\n";
+        return 1;
+      }
+      break;
 
-      case CommandOption::Unknown:
-      default:
-        std::cerr << "WARNING: Unknown argument ignored: " << args[i] << "\n";
-        break;
+    case CommandOption::Unknown:
+    default:
+      std::cerr << "WARNING: Unknown argument ignored: " << args[i] << "\n";
+      break;
     }
   }
 

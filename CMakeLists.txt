@@ -1,7 +1,7 @@
-# CmakeLists.txt
+# ./CmakeLists.txt
 cmake_minimum_required(VERSION 3.15)
-project(LogMonitor 
-  VERSION 1.0 
+project(LogMonitor
+  VERSION 1.0
   LANGUAGES CXX
 )
 
@@ -32,7 +32,7 @@ enable_testing()
 add_subdirectory(tests)
 
 
-file(GLOB_RECURSE ALL_CXX_SOURCE_FILES 
+file(GLOB_RECURSE ALL_CXX_SOURCE_FILES
     "src/*.cpp" "include/*.hpp" "tests/*.cpp"
 )
 
@@ -49,9 +49,9 @@ add_custom_target(cppcheck
 )
 
 add_custom_target(cpplint
-    COMMAND cpplint --filter=-legal/copyright ${ALL_CXX_SOURCE_FILES}
+    COMMAND cpplint ${ALL_CXX_SOURCE_FILES}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Running cpplint..."
+    COMMENT "Running cpplint with config from CPPLINT.cfg..."
 )
 
 add_custom_target(doxygen

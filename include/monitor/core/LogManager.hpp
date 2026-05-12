@@ -1,10 +1,13 @@
 // include/monitor/core/LogManager.hpp
 
+#ifndef INCLUDE_MONITOR_CORE_LOGMANAGER_HPP_
+#define INCLUDE_MONITOR_CORE_LOGMANAGER_HPP_
+
 #include <string>
 
 namespace monitor {
 class LogManager {
- public:
+public:
   LogManager() = default;
   ~LogManager() = default;
 
@@ -16,15 +19,17 @@ class LogManager {
    * @param outputDirectory Where to save "total_log1.txt"
    * @return true if successful
    */
-  bool processSingleLogFile(const std::string& sourceFilePath,
-                            const std::string& outputDirectory);
+  bool processSingleLogFile(const std::string &sourceFilePath,
+                            const std::string &outputDirectory);
 
   /**
    * @brief Reads the master file and processes all logs listed inside it.
    * @param masterFilePath e.g. "logs.txt"
    * @param outputDirectory Where to save the merged files
    */
-  void processAllLogs(const std::string& masterFilePath,
-                      const std::string& outputDirectory);
+  void processAllLogs(const std::string &masterFilePath,
+                      const std::string &outputDirectory);
 };
-}  // namespace monitor
+} // namespace monitor
+
+#endif // INCLUDE_MONITOR_CORE_LOGMANAGER_HPP_

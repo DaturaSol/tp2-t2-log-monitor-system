@@ -1,10 +1,11 @@
 // src/core/LogParser.cpp
 
-#include <monitor/core/LogParser.hpp>
-#include <monitor/utils/LogTypes.hpp>
 #include <regex>
+#include <string>
 
+#include "monitor/core/LogParser.hpp"
 #include "monitor/utils/DateUtils.hpp"
+#include "monitor/utils/LogTypes.hpp"
 
 namespace monitor {
 LogEntry LogParser::parseLogLine(const std::string &line) {
@@ -43,4 +44,4 @@ LogEntry LogParser::parseLogLine(const std::string &line) {
   }
   return entry;
 }
-}  // namespace monitor
+} // namespace monitor

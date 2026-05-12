@@ -3,10 +3,11 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
-#include <monitor/core/LogManager.hpp>
+#include <string>
 #include <vector>
 
 #include "monitor/core/LogListParser.hpp"
+#include "monitor/core/LogManager.hpp"
 #include "monitor/core/LogParser.hpp"
 #include "monitor/utils/LogTypes.hpp"
 
@@ -63,4 +64,4 @@ void LogManager::processAllLogs(const std::string &masterFilePath,
     processSingleLogFile(targetFile, outputDirectory);
   }
 }
-}  // namespace monitor
+} // namespace monitor
