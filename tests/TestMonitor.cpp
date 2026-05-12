@@ -2,6 +2,9 @@
 
 #include <gtest/gtest.h>
 
+#include <filesystem>
+#include <fstream>
+#include <monitor/LogMonitor.hpp>
 #include <monitor/core/LogListParser.hpp>
 #include <monitor/core/LogParser.hpp>
 #include <monitor/utils/DateUtils.hpp>
@@ -13,12 +16,12 @@
  * Idea is to check if the parser can validate a correct log
  */
 TEST(LogParserTest, ParsesValidLogLine) {
-  std::string validLine = "16/1/2026 13:27:46 Este é um exemplo de log";
+  std::string validLine = "16/1/2026 13:27:46 This is a valid Log format.";
 
   monitor::LogEntry expected;
   expected.date = "16/1/2026";
   expected.time = "13:27:46";
-  expected.message = "Este é um exemplo de log";
+  expected.message = "This is a valid Log format.";
   expected.isValid = true;
 
   monitor::LogEntry result = monitor::LogParser::parseLogLine(validLine);
@@ -61,10 +64,12 @@ TEST(LogListParserTest, ReadsPathsFromStream) {
  * Idea is to check if the program can read from a mock file.
  */
 TEST(LogListParserIntegrationTest, ReadsRealFileFromMocks) {
-  std::string mockFilePath = "mocks/master_logs.txt";
+  std::filesystem::path projectRoot = std::filesystem::path(PROJECT_ROOT);
+  std::filesystem::path mockFilePath =
+      projectRoot / "tests" / "mocks" / "master_logs.txt";
 
   std::vector<std::string> paths =
-      monitor::LogListParser::getLogPaths(mockFilePath);
+      monitor::LogListParser::getLogPaths(mockFilePath.string());
 
   ASSERT_EQ(paths.size(), 2);
   EXPECT_EQ(paths[0], "c:\\logs\\log1.txt");
@@ -77,10 +82,12 @@ TEST(LogListParserIntegrationTest, ReadsRealFileFromMocks) {
  * file
  */
 TEST(LogListParserIntegrationTest, ReturnsEmptyWhenFileMissing) {
-  std::string missingFilePath = "mocks/does_not_exist.txt";
+  std::filesystem::path projectRoot = std::filesystem::path(PROJECT_ROOT);
+  std::filesystem::path missingFilePath =
+      projectRoot / "tests" / "mocks" / "does_not_exist.txt";
 
   std::vector<std::string> paths =
-      monitor::LogListParser::getLogPaths(missingFilePath);
+      monitor::LogListParser::getLogPaths(missingFilePath.string());
 
   EXPECT_TRUE(paths.empty());
 }
@@ -102,4 +109,39 @@ TEST(DateUtilsTest, ConvertsStringsToSortableTimestamps) {
   EXPECT_GT(timestamp2, timestamp1);
 
   EXPECT_NE(timestamp1, 0);
+}
+
+/*
+ * Test 7
+ * Idea tests a single master file
+ */
+TEST(LogManagerTest, ProcessesAndSortsSingleFile) {
+  std::filesystem::path projectRoot = std::filesystem::path(PROJECT_ROOT);
+  std::filesystem::path outDir = projectRoot / "tests" / "mocks" / "output";
+  std::filesystem::create_directories(outDir);
+
+  std::filesystem::path mockLog = outDir / "log1.txt";
+  std::ofstream out(mockLog);
+  out << "20/1/2026 17:45:38 Log entry B\n";
+  out << "16/1/2026 13:27:46 Log entry A\n";
+  out.close();
+
+  monitor::LogManager manager;
+  bool success =
+      manager.processSingleLogFile(mockLog.string(), outDir.string());
+
+  EXPECT_TRUE(success);
+
+  std::filesystem::path totalLogPath = outDir / "total_log1.txt";
+  ASSERT_TRUE(std::filesystem::exists(totalLogPath));
+
+  std::ifstream in(totalLogPath);
+  std::string line1, line2;
+  std::getline(in, line1);
+  std::getline(in, line2);
+
+  EXPECT_EQ(line1, "16/1/2026 13:27:46 Log entry A");
+  EXPECT_EQ(line2, "20/1/2026 17:45:38 Log entry B");
+
+  std::filesystem::remove_all(outDir);
 }
