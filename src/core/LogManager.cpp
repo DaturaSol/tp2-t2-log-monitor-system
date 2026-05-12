@@ -6,6 +6,7 @@
 #include <monitor/core/LogManager.hpp>
 #include <vector>
 
+#include "monitor/core/LogListParser.hpp"
 #include "monitor/core/LogParser.hpp"
 #include "monitor/utils/LogTypes.hpp"
 
@@ -55,6 +56,11 @@ bool LogManager::processSingleLogFile(const std::string &sourceFilePath,
 
 void LogManager::processAllLogs(const std::string &masterFilePath,
                                 const std::string &outputDirectory) {
-  // TODO:
+  std::vector<std::string> targetFiles =
+      LogListParser::getLogPaths(masterFilePath);
+
+  for (const std::string &targetFile : targetFiles) {
+    processSingleLogFile(targetFile, outputDirectory);
+  }
 }
 }  // namespace monitor
