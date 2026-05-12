@@ -11,8 +11,6 @@ target_link_libraries(log_test PRIVATE
 
 target_compile_definitions(log_test PRIVATE PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 
-# file(COPY mocks DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
 add_test(NAME MonitoraTests COMMAND log_test)
 
 add_custom_target(valgrind
@@ -20,11 +18,6 @@ add_custom_target(valgrind
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running Valgrind on tests..."
 )
-
-target_compile_options(log_test PRIVATE --coverage -fprofile-arcs -ftest-coverage)
-target_link_options(log_test PRIVATE --coverage -fprofile-arcs -ftest-coverage)
-target_compile_options(monitor_core PRIVATE --coverage -fprofile-arcs -ftest-coverage)
-target_link_options(monitor_core PRIVATE --coverage -fprofile-arcs -ftest-coverage)
 
 add_custom_target(coverage
     COMMAND gcov ${CMAKE_SOURCE_DIR}/src/core/*.cpp

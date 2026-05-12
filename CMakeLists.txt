@@ -9,11 +9,22 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+option(ENABLE_COVERAGE "Enable code coverage instrumentation" ON)
+
+if(ENABLE_COVERAGE)
+    message(STATUS "Build with Coverage enabled")
+    add_compile_options(--coverage -fprofile-arcs -ftest-coverage)
+    add_link_options(--coverage -fprofile-arcs -ftest-coverage)
+else()
+    message(STATUS "Build for Performance (No Coverage)")
+endif()
+
+
 if(NOT CMAKE_BUILD_TYPE)
+    message(STATUS "Build with DEBUG type")
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-# include_directories(include)
 
 add_subdirectory(src)
 
