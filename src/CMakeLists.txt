@@ -1,5 +1,6 @@
 # src/CmakeLists.txt
 add_library(monitor_core
+  core/LogListParser.cpp 
   core/LogManager.cpp
   core/LogParser.cpp
   utils/StringUtils.cpp
