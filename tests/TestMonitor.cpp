@@ -64,9 +64,16 @@ TEST(LogListParserTest, ReadsPathsFromStream) {
  * Idea is to check if the program can read from a mock file.
  */
 TEST(LogListParserIntegrationTest, ReadsRealFileFromMocks) {
-  std::filesystem::path projectRoot = std::filesystem::path(PROJECT_ROOT);
-  std::filesystem::path mockFilePath =
-      projectRoot / "tests" / "mocks" / "master_logs.txt";
+  std::filesystem::path projectRoot(PROJECT_ROOT);
+  std::filesystem::path mockDirPath = projectRoot / "tests" / "mocks";
+  std::filesystem::create_directories(mockDirPath);
+
+  std::filesystem::path mockFilePath = mockDirPath / "logs.txt";
+
+  std::ofstream out(mockFilePath);
+  out << "c:\\logs\\log1.txt\n";
+  out << "f:\\logs\\log2.txt";
+  out.close();
 
   std::vector<std::string> paths =
       monitor::LogListParser::getLogPaths(mockFilePath.string());
@@ -74,6 +81,8 @@ TEST(LogListParserIntegrationTest, ReadsRealFileFromMocks) {
   ASSERT_EQ(paths.size(), 2);
   EXPECT_EQ(paths[0], "c:\\logs\\log1.txt");
   EXPECT_EQ(paths[1], "f:\\logs\\log2.txt");
+
+  std::filesystem::remove_all(mockDirPath);
 }
 
 /*
@@ -82,14 +91,17 @@ TEST(LogListParserIntegrationTest, ReadsRealFileFromMocks) {
  * file
  */
 TEST(LogListParserIntegrationTest, ReturnsEmptyWhenFileMissing) {
-  std::filesystem::path projectRoot = std::filesystem::path(PROJECT_ROOT);
-  std::filesystem::path missingFilePath =
-      projectRoot / "tests" / "mocks" / "does_not_exist.txt";
+  std::filesystem::path projectRoot(PROJECT_ROOT);
+  std::filesystem::path mockDirPath = projectRoot / "tests" / "mocks";
+  std::filesystem::create_directories(mockDirPath);
+
+  std::filesystem::path missingFilePath = mockDirPath / "master_logs.txt";
 
   std::vector<std::string> paths =
       monitor::LogListParser::getLogPaths(missingFilePath.string());
 
   EXPECT_TRUE(paths.empty());
+  std::filesystem::remove_all(mockDirPath);
 }
 
 /*
@@ -116,7 +128,7 @@ TEST(DateUtilsTest, ConvertsStringsToSortableTimestamps) {
  * Idea tests a single master file
  */
 TEST(LogManagerTest, ProcessesAndSortsSingleFile) {
-  std::filesystem::path projectRoot = std::filesystem::path(PROJECT_ROOT);
+  std::filesystem::path projectRoot(PROJECT_ROOT);
   std::filesystem::path outDir = projectRoot / "tests" / "mocks" / "output";
   std::filesystem::create_directories(outDir);
 
@@ -144,4 +156,34 @@ TEST(LogManagerTest, ProcessesAndSortsSingleFile) {
   EXPECT_EQ(line2, "20/1/2026 17:45:38 Log entry B");
 
   std::filesystem::remove_all(outDir);
+}
+
+/*
+ * Test 8.
+ * A complete test from the pipeline
+ */
+TEST(LogManagerTest, ProcessesAllLogsFromMasterFile) {
+  std::filesystem::path projectRoot(PROJECT_ROOT);
+  std::filesystem::path testDir =
+      projectRoot / "tests" / "mocks" / "integration_test";
+  std::filesystem::create_directories(testDir);
+
+  std::filesystem::path log1 = testDir / "log1.txt";
+  std::ofstream out1(log1);
+  out1 << "20/1/2026 10:00:00 Entry 2\n";
+  out1 << "16/1/2026 10:00:00 Entry 1\n";
+  out1.close();
+
+  std::filesystem::path masterLog = testDir / "logs.txt";
+  std::ofstream masterOut(masterLog);
+  masterOut << log1.string() << "\n";
+  masterOut.close();
+
+  monitor::LogManager manager;
+  manager.processAllLogs(masterLog.string(), testDir.string());
+
+  std::filesystem::path totalLog1 = testDir / "total_log1.txt";
+  EXPECT_TRUE(std::filesystem::exists(totalLog1));
+
+  std::filesystem::remove_all(testDir);
 }

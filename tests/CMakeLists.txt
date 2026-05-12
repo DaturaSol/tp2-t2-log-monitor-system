@@ -11,7 +11,7 @@ target_link_libraries(log_test PRIVATE
 
 target_compile_definitions(log_test PRIVATE PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 
-file(COPY mocks DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# file(COPY mocks DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_test(NAME MonitoraTests COMMAND log_test)
 
