@@ -5,6 +5,9 @@
 #include <string>
 
 namespace monitor {
+/**
+ *
+ */
 struct LogEntry {
   std::string date;
   std::string time;
