@@ -4,6 +4,7 @@
 
 #include <monitor/core/LogListParser.hpp>
 #include <monitor/core/LogParser.hpp>
+#include <monitor/utils/DateUtils.hpp>
 #include <monitor/utils/LogTypes.hpp>
 #include <sstream>
 
@@ -82,4 +83,23 @@ TEST(LogListParserIntegrationTest, ReturnsEmptyWhenFileMissing) {
       monitor::LogListParser::getLogPaths(missingFilePath);
 
   EXPECT_TRUE(paths.empty());
+}
+
+/*
+ * Test 6
+ * Idea is to check if convert is going well
+ */
+TEST(DateUtilsTest, ConvertsStringsToSortableTimestamps) {
+  std::string date1 = "16/1/2026";
+  std::string time1 = "13:27:46";
+
+  std::string date2 = "17/1/2026";
+  std::string time2 = "14:17:46";
+
+  long timestamp1 = monitor::DateUtils::convertToTimestamp(date1, time1);
+  long timestamp2 = monitor::DateUtils::convertToTimestamp(date2, time2);
+
+  EXPECT_GT(timestamp2, timestamp1);
+
+  EXPECT_NE(timestamp1, 0);
 }

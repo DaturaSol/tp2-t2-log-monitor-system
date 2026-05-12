@@ -4,6 +4,8 @@
 #include <monitor/utils/LogTypes.hpp>
 #include <regex>
 
+#include "monitor/utils/DateUtils.hpp"
+
 namespace monitor {
 LogEntry LogParser::parseLogLine(const std::string &line) {
   LogEntry entry;
@@ -34,6 +36,7 @@ LogEntry LogParser::parseLogLine(const std::string &line) {
     if (entry.message.length() > 100) {
       entry.message.resize(100);
     }
+    entry.timestamp = DateUtils::convertToTimestamp(entry.date, entry.time);
     entry.isValid = true;
   } else {
     entry.isValid = false;
