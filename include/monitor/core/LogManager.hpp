@@ -1,4 +1,4 @@
-// include/monitor/LogMonitor.hpp
+// include/monitor/core/LogManager.hpp
 
 #include <string>
 

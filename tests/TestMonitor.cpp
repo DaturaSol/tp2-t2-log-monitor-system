@@ -4,8 +4,8 @@
 
 #include <filesystem>
 #include <fstream>
-#include <monitor/LogMonitor.hpp>
 #include <monitor/core/LogListParser.hpp>
+#include <monitor/core/LogManager.hpp>
 #include <monitor/core/LogParser.hpp>
 #include <monitor/utils/DateUtils.hpp>
 #include <monitor/utils/LogTypes.hpp>

@@ -21,5 +21,10 @@ struct LogEntry {
     return date == other.date && time == other.time &&
            message == other.message && isValid == other.isValid;
   }
+
+  // overloads for sorting
+  bool operator<(const LogEntry& other) const {
+    return timestamp < other.timestamp;
+  }
 };
 }  // namespace monitor

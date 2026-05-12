@@ -3,6 +3,7 @@ add_library(monitor_core
   core/LogListParser.cpp
   core/LogParser.cpp
   utils/DateUtils.cpp
+  core/LogManager.cpp
 )
 
 target_include_directories(monitor_core PUBLIC
