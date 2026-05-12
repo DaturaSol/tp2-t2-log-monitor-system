@@ -54,3 +54,32 @@ TEST(LogListParserTest, ReadsPathsFromStream) {
   EXPECT_EQ(paths[0], "c:\\logs\\log1.txt");
   EXPECT_EQ(paths[1], "f:\\logs\\log2.txt");
 }
+
+/*
+ * Test 4.
+ * Idea is to check if the program can read from a mock file.
+ */
+TEST(LogListParserIntegrationTest, ReadsRealFileFromMocks) {
+  std::string mockFilePath = "mocks/master_logs.txt";
+
+  std::vector<std::string> paths =
+      monitor::LogListParser::getLogPaths(mockFilePath);
+
+  ASSERT_EQ(paths.size(), 2);
+  EXPECT_EQ(paths[0], "c:\\logs\\log1.txt");
+  EXPECT_EQ(paths[1], "f:\\logs\\log2.txt");
+}
+
+/*
+ * Test 5
+ * Idea is to check if the program returns an empty array of paths if missing
+ * file
+ */
+TEST(LogListParserIntegrationTest, ReturnsEmptyWhenFileMissing) {
+  std::string missingFilePath = "mocks/does_not_exist.txt";
+
+  std::vector<std::string> paths =
+      monitor::LogListParser::getLogPaths(missingFilePath);
+
+  EXPECT_TRUE(paths.empty());
+}

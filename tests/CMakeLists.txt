@@ -9,6 +9,8 @@ target_link_libraries(log_test PRIVATE
     monitor_core
 )
 
+file(COPY mocks DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 add_test(NAME MonitoraTests COMMAND log_test)
 
 add_custom_target(valgrind
