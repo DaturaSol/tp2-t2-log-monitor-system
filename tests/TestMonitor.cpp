@@ -25,6 +25,8 @@ TEST(LogParserTest, ParsesValidLogLine) {
   expected.date = "16/1/2026";
   expected.time = "13:27:46";
   expected.message = "This is a valid Log format.";
+  expected.timestamp =
+      monitor::DateUtils::convertToTimestamp(expected.date, expected.time);
   expected.isValid = true;
 
   monitor::LogEntry result = monitor::LogParser::parseLogLine(validLine);
@@ -221,6 +223,31 @@ TEST(LogManagerTest, MergesFilesWithSameName) {
   count++;
 
   EXPECT_EQ(count, 2);
+
+  std::filesystem::remove_all(testDir);
+}
+
+TEST(LogManagerTest, RemovesDuplicateEntries) {
+  std::filesystem::path testDir = "test_duplicates";
+  std::filesystem::create_directories(testDir);
+
+  std::ofstream f1(testDir / "log1.txt");
+  f1 << "16/1/2026 13:00:00 Identical Log\n";
+  f1 << "16/1/2026 13:00:00 Identical Log\n";
+  f1.close();
+
+  monitor::LogManager manager;
+  manager.processSingleLogFile((testDir / "log1.txt").string(),
+                               testDir.string());
+
+  std::ifstream in(testDir / "total_log1.txt");
+  std::string line;
+  int count = 0;
+  while (std::getline(in, line)) {
+    count++;
+  }
+
+  EXPECT_EQ(count, 1);
 
   std::filesystem::remove_all(testDir);
 }

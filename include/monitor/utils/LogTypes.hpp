@@ -29,8 +29,7 @@ struct LogEntry {
    * @return True if all primary fields match.
    */
   bool operator==(const LogEntry &other) const {
-    return date == other.date && time == other.time &&
-           message == other.message && isValid == other.isValid;
+    return timestamp == other.timestamp && message == other.message;
   }
 
   /**
@@ -38,7 +37,9 @@ struct LogEntry {
    * @return True if this entry precedes the other chronologically.
    */
   bool operator<(const LogEntry &other) const {
-    return timestamp < other.timestamp;
+    if (timestamp != other.timestamp)
+      return timestamp < other.timestamp;
+    return message < other.message;
   }
 };
 } // namespace monitor

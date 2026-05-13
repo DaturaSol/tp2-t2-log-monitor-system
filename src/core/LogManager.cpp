@@ -69,6 +69,9 @@ bool LogManager::processSingleLogFile(const std::string &sourceFilePath,
 
   std::sort(logs.begin(), logs.end());
 
+  std::vector<LogEntry>::iterator it = std::unique(logs.begin(), logs.end());
+  logs.erase(it, logs.end());
+
   std::ofstream outFile(outPath);
   if (!outFile.is_open()) {
     return false;
