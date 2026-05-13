@@ -35,29 +35,39 @@ bool LogManager::processSingleLogFile(const std::string &sourceFilePath,
   assert(!outputDirectory.empty() &&
          "WARNING: outputDirectory cannot be empty!");
 
+  std::filesystem::path srcPath(sourceFilePath);
+  std::string filename = srcPath.filename().string();
+  std::filesystem::path outPath =
+      std::filesystem::path(outputDirectory) / ("total_" + filename);
+
+  std::vector<LogEntry> logs;
+  std::string line;
+
+  // merge with old log file
+  if (std::filesystem::exists(outPath)) {
+    std::ifstream existingTotal(outPath);
+    while (std::getline(existingTotal, line)) {
+      LogEntry entry = LogParser::parseLogLine(line);
+      if (entry.isValid) {
+        logs.push_back(entry);
+      }
+    }
+    existingTotal.close();
+  }
+
   std::ifstream inFile(sourceFilePath);
   if (!inFile.is_open()) {
     return false;
   }
-  std::vector<LogEntry> logs;
-  std::string line;
-
   while (std::getline(inFile, line)) {
     LogEntry entry = LogParser::parseLogLine(line);
-    if (!entry.isValid) {
-      continue;
+    if (entry.isValid) {
+      logs.push_back(entry);
     }
-    logs.push_back(entry);
   }
   inFile.close();
 
   std::sort(logs.begin(), logs.end());
-
-  std::filesystem::path srcPath(sourceFilePath);
-  std::string filename = srcPath.filename().string();
-
-  std::filesystem::path outPath =
-      std::filesystem::path(outputDirectory) / ("total_" + filename);
 
   std::ofstream outFile(outPath);
   if (!outFile.is_open()) {
@@ -70,7 +80,6 @@ bool LogManager::processSingleLogFile(const std::string &sourceFilePath,
   outFile.close();
 
   assert(std::filesystem::exists(outPath) && "WARNING: No file was generated!");
-
   return true;
 }
 

@@ -189,3 +189,38 @@ TEST(LogManagerTest, ProcessesAllLogsFromMasterFile) {
 
   std::filesystem::remove_all(testDir);
 }
+
+TEST(LogManagerTest, MergesFilesWithSameName) {
+  std::filesystem::path projectRoot(PROJECT_ROOT);
+  std::filesystem::path testDir =
+      projectRoot / "tests" / "mocks" / "test_collision";
+  std::filesystem::create_directories(testDir);
+
+  std::ofstream f1(testDir / "log1.txt");
+  f1 << "16/1/2026 13:00:00 Log A\n";
+  f1.close();
+
+  std::filesystem::create_directories(testDir / "sub");
+  std::ofstream f2(testDir / "sub/log1.txt");
+  f2 << "15/1/2026 13:00:00 Log B\n";
+  f2.close();
+
+  monitor::LogManager manager;
+  manager.processSingleLogFile((testDir / "log1.txt").string(),
+                               testDir.string());
+  manager.processSingleLogFile((testDir / "sub/log1.txt").string(),
+                               testDir.string());
+
+  std::ifstream in(testDir / "total_log1.txt");
+  std::string line;
+  int count = 0;
+  std::getline(in, line);
+  EXPECT_TRUE(line.find("Log B") != std::string::npos);
+  count++;
+  std::getline(in, line);
+  count++;
+
+  EXPECT_EQ(count, 2);
+
+  std::filesystem::remove_all(testDir);
+}
