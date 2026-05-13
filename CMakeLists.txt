@@ -1,5 +1,8 @@
 # ./CmakeLists.txt
 cmake_minimum_required(VERSION 3.15)
+
+set(CMAKE_CXX_COMPILER "g++" CACHE STRING "Compiler" FORCE)
+
 project(LogMonitor
   VERSION 1.0
   LANGUAGES CXX
@@ -8,6 +11,20 @@ project(LogMonitor
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+
+find_program(GDB_PATH gdb)
+if(NOT GDB_PATH)
+    message(FATAL_ERROR "GDB is required but was not found. Please install it (e.g., sudo apt install gdb).")
+endif()
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10.0)
+        message(FATAL_ERROR "Your g++ version is too old. Please use g++ 10 or higher for full C++20 support.")
+    endif()
+else()
+    message(WARNING "You are not using GNU GCC (g++). Ensure your compiler supports C++20.")
+endif()
 
 option(ENABLE_COVERAGE "Enable code coverage instrumentation" ON)
 
@@ -58,4 +75,5 @@ add_custom_target(doxygen
     COMMAND doxygen doxygen.conf
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/docs
     COMMENT "Generating Doxygen documentation..."
+    USES_TERMINAL
 )

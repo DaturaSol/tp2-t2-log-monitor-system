@@ -1,6 +1,12 @@
 // src/core/LogManager.cpp
+/**
+ * @file LogManager.cpp
+ * @brief Implementation of the LogManager class for orchestrating log
+ * processing workflows.
+ */
 
 #include <algorithm>
+#include <cassert>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -12,12 +18,23 @@
 #include "monitor/utils/LogTypes.hpp"
 
 namespace monitor {
-std::string LogManager::getStatus() const {
-  return "LogManager is initializing and ready to process.";
-}
 
+/**
+ * @details Performs the following operations:
+ * 1. Opens and validates the source log file.
+ * 2. Parses individual lines into LogEntry structures.
+ * 3. Sorts entries chronologically using the overloaded operator< in LogEntry.
+ * 4. Writes the processed entries to a new file prefixed with "total_".
+ *
+ * @return True if the file was processed and written successfully; false
+ * otherwise.
+ */
 bool LogManager::processSingleLogFile(const std::string &sourceFilePath,
                                       const std::string &outputDirectory) {
+  assert(!sourceFilePath.empty() && "WARNING: SourceFilePath cannot be empty!");
+  assert(!outputDirectory.empty() &&
+         "WARNING: outputDirectory cannot be empty!");
+
   std::ifstream inFile(sourceFilePath);
   if (!inFile.is_open()) {
     return false;
@@ -52,11 +69,20 @@ bool LogManager::processSingleLogFile(const std::string &sourceFilePath,
   }
   outFile.close();
 
+  assert(std::filesystem::exists(outPath) && "WARNING: No file was generated!");
+
   return true;
 }
 
+/**
+ * @details Orchestrates batch processing by retrieving a list of paths from the
+ * provided master configuration file and delegating each path to
+ * processSingleLogFile.
+ */
 void LogManager::processAllLogs(const std::string &masterFilePath,
                                 const std::string &outputDirectory) {
+  assert(!masterFilePath.empty() && "Master file path cannot be empty!");
+
   std::vector<std::string> targetFiles =
       LogListParser::getLogPaths(masterFilePath);
 

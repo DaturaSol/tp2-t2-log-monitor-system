@@ -1,4 +1,9 @@
 // include/monitor/core/LogManager.hpp
+/**
+ * @file LogManager.hpp
+ * @brief Definition of the LogManager class for orchestrating log processing.
+ * @author @DaturaSol
+ */
 
 #ifndef INCLUDE_MONITOR_CORE_LOGMANAGER_HPP_
 #define INCLUDE_MONITOR_CORE_LOGMANAGER_HPP_
@@ -6,12 +11,22 @@
 #include <string>
 
 namespace monitor {
+
+/**
+ * @class LogManager
+ * @brief Orchestrates the extraction, sorting, and aggregation of log data.
+ *
+ * This class acts as the primary interface for managing the log processing
+ * workflow, handling both individual log files and master configuration lists.
+ */
 class LogManager {
 public:
+  /** @brief Initializes a new instance of the LogManager. */
   LogManager() = default;
+
+  /** @brief Cleans up resources used by the LogManager. */
   ~LogManager() = default;
 
-  std::string getStatus() const;
   /**
    * @brief Reads a single log file, sorts its contents, and writes to a total_
    * file.

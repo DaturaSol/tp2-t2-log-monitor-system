@@ -1,4 +1,8 @@
 // src/main.cpp
+/**
+ * @file main.cpp
+ * @brief Entry point for the Log Monitor CLI application.
+ */
 
 #include <filesystem>
 #include <iostream>
@@ -8,6 +12,10 @@
 
 #include "monitor/core/LogManager.hpp"
 
+/**
+ * @brief Displays the application usage instructions to standard output.
+ * @param programName The name of the executable (argv[0]).
+ */
 void printUsage(const char *programName) {
   std::cout << "Usage: " << programName << " [options]\n\n"
             << "Options:\n"
@@ -18,29 +26,32 @@ void printUsage(const char *programName) {
             << "  --help                Show this help message\n";
 }
 
+/**
+ * @enum CommandOption
+ * @brief Maps command-line flags to internal identifiers.
+ */
 enum class CommandOption { Help, MasterFile, OutDir, Unknown };
 
-std::unordered_map<std::string, CommandOption> optionMap = {
+/**
+ * @brief Registry of supported command-line arguments.
+ */
+const std::unordered_map<std::string, CommandOption> optionMap = {
     {"--help", CommandOption::Help},
     {"-h", CommandOption::Help},
     {"--masterFile", CommandOption::MasterFile},
     {"--outdir", CommandOption::OutDir}};
 
 int main(int argc, char *argv[]) {
-  std::cout << "Log Monitor starting...\n"
-            << "For help pass the flag --help or --h. \n";
-
   std::string masterFilePath = "logs.txt";
   std::string outputDir = std::filesystem::current_path().string();
 
-  bool masterFileProvided = false;
-  bool outputDirProvided = false;
+  const std::vector<std::string> args(argv + 1, argv + argc);
 
-  std::vector<std::string> args(argv + 1, argv + argc);
-
+  // Argument Parsing
   for (size_t i = 0; i < args.size(); ++i) {
+    auto it = optionMap.find(args[i]);
     CommandOption opt =
-        optionMap.count(args[i]) ? optionMap[args[i]] : CommandOption::Unknown;
+        (it != optionMap.end()) ? it->second : CommandOption::Unknown;
 
     switch (opt) {
     case CommandOption::Help:
@@ -50,9 +61,8 @@ int main(int argc, char *argv[]) {
     case CommandOption::MasterFile:
       if (i + 1 < args.size()) {
         masterFilePath = args[++i];
-        masterFileProvided = true;
       } else {
-        std::cerr << "ERROR: --masterFile requires a file path argument.\n";
+        std::cerr << "Error: --masterFile requires a file path argument.\n";
         return 1;
       }
       break;
@@ -60,46 +70,40 @@ int main(int argc, char *argv[]) {
     case CommandOption::OutDir:
       if (i + 1 < args.size()) {
         outputDir = args[++i];
-        outputDirProvided = true;
       } else {
-        std::cerr << "ERROR: --outdir requires a directory path argument.\n";
+        std::cerr << "Error: --outdir requires a directory path argument.\n";
         return 1;
       }
       break;
 
-    case CommandOption::Unknown:
     default:
-      std::cerr << "WARNING: Unknown argument ignored: " << args[i] << "\n";
+      std::cerr << "Warning: Unknown argument ignored: " << args[i] << "\n";
       break;
     }
   }
 
-  if (!masterFileProvided) {
-    std::cout << "No --masterFile was passed. Using default: " << masterFilePath
-              << "\n";
-  }
-  if (!outputDirProvided) {
-    std::cout << "No --outdir specified. Using default: " << outputDir << "\n";
-  }
-
+  // Validation
   if (!std::filesystem::exists(masterFilePath)) {
-    std::cerr << "ERROR: FilePath " << masterFilePath << " was not found!\n";
+    std::cerr << "Error: Master log file not found at: " << masterFilePath
+              << "\n";
     return 1;
   }
 
-  if (!std::filesystem::exists(outputDir)) {
-    std::cout << "Output directory does not exist. Creating: " << outputDir
+  try {
+    if (!std::filesystem::exists(outputDir)) {
+      std::filesystem::create_directories(outputDir);
+    }
+  } catch (const std::filesystem::filesystem_error &e) {
+    std::cerr << "Error: Failed to create output directory: " << e.what()
               << "\n";
-    std::filesystem::create_directories(outputDir);
+    return 1;
   }
 
-  std::cout << "Reading files in: " << masterFilePath << "\n";
-  std::cout << "Saving merges in: " << outputDir << "\n";
-
+  // Execution
+  std::cout << "Starting Log Monitor...\n";
   monitor::LogManager manager;
   manager.processAllLogs(masterFilePath, outputDir);
 
-  std::cout << "Processing finished with status code 0\n";
-
+  std::cout << "Processing completed successfully.\n";
   return 0;
 }

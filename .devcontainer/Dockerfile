@@ -1,6 +1,6 @@
 # .devcontainer/Dockerfile
 # -----------------------------------------
-# Dockerfile; simple docker container 
+# Dockerfile; simple docker container
 # intended for c++ programming.
 # -----------------------------------------
 FROM ubuntu:22.04
@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y \
     valgrind \
     python3-pip \
     cppcheck \
+    doxygen \
+    graphviz \
     && rm -rf /var/lib/apt/lists/*
 
 RUN cd /usr/src/googletest && \
